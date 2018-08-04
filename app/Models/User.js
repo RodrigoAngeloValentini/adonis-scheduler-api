@@ -28,6 +28,11 @@ class User extends Model {
    *
    * @return {Object}
    */
+
+  static get hidden() {
+    return ['password'];
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

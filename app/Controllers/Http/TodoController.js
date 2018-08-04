@@ -2,6 +2,7 @@
 
 const Todo = use('App/Models/Todo');
 const User = use('App/Models/User');
+const Database = use('Database');
 const { validate } = use('Validator');
 /**
  * Resourceful controller for interacting with todos
@@ -11,8 +12,13 @@ class TodoController {
    * Show a list of all todos.
    * GET todos
    */
-  async index({ request, response, view }) {
-    const todos = await Todo.all();
+  async index({ response, auth }) {
+    const authUser = await auth.getUser();
+
+    const todos = await Todo.query()
+      .where({ user_id: authUser.id })
+      .fetch();
+
     return response.json(todos);
   }
 
@@ -34,11 +40,11 @@ class TodoController {
    * Create/save a new todo.
    * POST todos
    */
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     try {
       const rules = {
-        title: 'required|max:80',
-        description: 'required|max:250',
+        title: 'required|string|max:80',
+        description: 'required|string|max:250',
         datetime: 'required|date',
       };
 
@@ -50,7 +56,8 @@ class TodoController {
         return response.status(402).json(validation.messages());
       }
 
-      const user = await User.first();
+      const authUser = await auth.getUser();
+      const user = await User.find(authUser.id);
 
       const todo = new Todo();
       todo.title = data.title;
