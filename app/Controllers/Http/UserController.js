@@ -25,7 +25,7 @@ class UserController {
       const validation = await validate(data, rules);
 
       if (validation.fails()) {
-        return response.status(402).json(validation.messages());
+        return response.status(422).json({ error: validation.messages() });
       }
 
       const user = new User();
@@ -46,9 +46,9 @@ class UserController {
     try {
       const user = await User.findBy('phone', params.phone);
       if (!user) {
-        return response.status(404).json({ data: 'User not found' });
+        return response.status(200).json({ status: false });
       }
-      return response.status(200).json(user);
+      return response.status(200).json({ status: true });
     } catch (error) {
       console.log(error);
       return response.json({ error: error.name });
@@ -71,7 +71,7 @@ class UserController {
       const validation = await validate(data, rules);
 
       if (validation.fails()) {
-        return response.status(402).json(validation.messages());
+        return response.status(422).json({ error: validation.messages() });
       }
 
       const user = await User.find(params.id);

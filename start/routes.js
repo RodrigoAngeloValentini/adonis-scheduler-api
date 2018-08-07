@@ -22,10 +22,13 @@ Route.get('/', ({ request }) => {
 Route.group(() => {
   Route.get('/todo', 'TodoController.index').middleware('auth');
   Route.get('/todo/:id', 'TodoController.show').middleware('auth');
+  Route.get('/todo/get-by-date/:date', 'TodoController.getByDate').middleware(
+    'auth',
+  );
   Route.post('/todo', 'TodoController.store').middleware('auth');
   Route.delete('/todo/:id', 'TodoController.destroy').middleware('auth');
 
-  Route.get('/user/find-by-phone/:phone', 'UserController.findByPhone');
+  Route.get('/user/phone-verify/:phone', 'UserController.findByPhone');
   Route.post('/user', 'UserController.store');
   Route.put('/user/:id', 'UserController.update').middleware('auth');
 

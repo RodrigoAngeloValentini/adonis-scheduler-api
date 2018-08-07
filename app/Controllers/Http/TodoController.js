@@ -22,6 +22,26 @@ class TodoController {
     return response.json(todos);
   }
 
+  async getByDate({ params, response, auth }) {
+    const authUser = await auth.getUser();
+
+    const date = params.date;
+
+    // select title, description, datetime from todos where user_id = 18 and datetime::date = '2018-08-03'
+
+    const todos = await Database.raw(
+      'select id, title, description, datetime from todos where user_id = ? and datetime::date = ?',
+      [authUser.id, date],
+    );
+
+    // const todos = await Todo.query()
+    //   .where({ user_id: authUser.id })
+    //   .where({ datetime: '2018-08-03 12:30:00-03' })
+    //   .fetch();
+
+    return response.json(todos.rows);
+  }
+
   /**
    * Display a single todo.
    * GET todos/:id
@@ -53,7 +73,7 @@ class TodoController {
       const validation = await validate(data, rules);
 
       if (validation.fails()) {
-        return response.status(402).json(validation.messages());
+        return response.status(422).json({ error: validation.messages() });
       }
 
       const authUser = await auth.getUser();

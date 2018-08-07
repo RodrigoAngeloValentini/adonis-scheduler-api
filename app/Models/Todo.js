@@ -11,6 +11,10 @@ class Todo extends Model {
     return ['id', 'title', 'description', 'datetime'];
   }
 
+  static get dates() {
+    return super.dates.concat(['datetime']);
+  }
+
   user() {
     return this.belongsTo('App/Models/User', 'user_id', 'id');
   }

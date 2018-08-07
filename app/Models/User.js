@@ -33,6 +33,10 @@ class User extends Model {
     return ['password'];
   }
 
+  static get visible() {
+    return ['phone', 'name'];
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }
