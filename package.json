@@ -30,5 +30,8 @@
   "devDependencies": {},
   "autoload": {
     "App": "./app"
+  },
+  "engines": {
+    "node": "8.11.2"
   }
 }
