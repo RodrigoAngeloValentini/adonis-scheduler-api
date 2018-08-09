@@ -30,7 +30,8 @@ Route.group(() => {
 
   Route.get('/user/phone-verify/:phone', 'UserController.findByPhone');
   Route.post('/user', 'UserController.store');
-  Route.put('/user/:id', 'UserController.update').middleware('auth');
+  Route.put('/user', 'UserController.update').middleware('auth');
 
   Route.post('/auth/authenticate', 'AuthController.authenticate');
+  Route.get('/auth/user', 'AuthController.getUser').middleware('auth');
 }).prefix('api');

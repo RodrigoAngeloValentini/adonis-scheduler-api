@@ -59,14 +59,15 @@ class UserController {
    * Update user details.
    * PUT or PATCH users/:id
    */
-  async update({ params, request, response }) {
+  async update({ params, request, response, auth }) {
     try {
       const rules = {
         name: 'string|max:80',
         password: 'string|max:60|min:6',
+        passwordConfirmation: 'string|max:60|min:6|same:password',
       };
 
-      const data = request.only(['name', 'password']);
+      const data = request.only(['name', 'password', 'passwordConfirmation']);
 
       const validation = await validate(data, rules);
 
@@ -74,7 +75,9 @@ class UserController {
         return response.status(422).json({ error: validation.messages() });
       }
 
-      const user = await User.find(params.id);
+      const authUser = await auth.getUser();
+
+      const user = await User.find(authUser.id);
       if (!user) {
         return response.status(404).json({ data: 'User not found' });
       }
@@ -90,7 +93,7 @@ class UserController {
       }
 
       await user.save();
-      return response.status(200).json(user);
+      return response.status(200).json({ phone: user.phone, name: user.name });
     } catch (error) {
       console.log(error);
       return response.json({ error: error.name });
